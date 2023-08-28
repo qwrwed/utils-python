@@ -1,0 +1,12 @@
+[build-system]
+requires = [
+    "setuptools ~= 64.0",
+    "wheel",
+]
+
+[project]
+name="utils-python"
+version="0.1.0"
+dependencies = [
+    "tqdm ~= 4.66.1",
+]
