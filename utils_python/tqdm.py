@@ -37,5 +37,5 @@ def print_tqdm(*args, **kwargs):
     if "flush" in kwargs:
         del kwargs["flush"]
     sep = kwargs.get("sep", " ")
-    s = sep.join(args)
+    s = sep.join((str(arg) for arg in args))
     tqdm.write(s, **kwargs)
