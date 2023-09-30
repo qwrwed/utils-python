@@ -25,9 +25,9 @@ def serialize_data(data: any, indent=4, default=str):
     return data_str
 
 
-def dump_data(data: any, filepath="tmp.json"):
+def dump_data(data: any, filepath="tmp.json", mode="w"):
     data_str = serialize_data(data)
-    with open(filepath, "w+") as f:
+    with open(filepath, mode) as f:
         f.write(data_str)
 
 
