@@ -14,16 +14,19 @@ def deduplicate(l: list):
     return l_deduplicated
 
 
-def dump_data(data: any, filepath="tmp.json"):
+def serialize_data(data: any, indent=4, default=str):
     if isinstance(data, str):
         data_str = data
     else:
-        indent = 4
-        default = str
         try:
             data_str = json.dumps(data, indent=indent, default=default)
         except TypeError:
             data_str = json.dumps(stringify_keys(data), indent=indent, default=default)
+    return data_str
+
+
+def dump_data(data: any, filepath="tmp.json"):
+    data_str = serialize_data(data)
     with open(filepath, "w+") as f:
         f.write(data_str)
 

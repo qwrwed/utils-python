@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name="utils_python"
-version="0.1.4"
+version="0.1.5"
 dependencies = [
     "tqdm ~= 4.66.1",
 ]
