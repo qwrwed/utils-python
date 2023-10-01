@@ -49,7 +49,7 @@ def logPrefixFilter(logger: logging.Logger, msg_prefix: str = ""):
     """
 
     def _filter(record: logging.LogRecord):
-        record.msg = msg_prefix + record.msg
+        record.msg = str(msg_prefix) + record.msg
         return record
 
     try:
