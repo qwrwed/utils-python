@@ -1,4 +1,5 @@
 import logging
+from contextlib import contextmanager
 from typing import Optional as Opt
 from typing import Type
 
@@ -35,3 +36,24 @@ def setup_logger(
     logger.setLevel(level)
 
     return logger
+
+
+@contextmanager
+def logPrefixFilter(logger: logging.Logger, msg_prefix: str = ""):
+    """
+    Temporarily prepends logged messages with the given string.
+
+    Args:
+        logger: logger to prepend msg_prefix to.
+        msg_prefix: string to prepend to logged messages.
+    """
+
+    def _filter(record: logging.LogRecord):
+        record.msg = msg_prefix + record.msg
+        return record
+
+    try:
+        logger.addFilter(_filter)
+        yield
+    finally:
+        logger.removeFilter(_filter)
