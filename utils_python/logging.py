@@ -41,7 +41,7 @@ def setup_logger(
 @contextmanager
 def logPrefixFilter(logger: logging.Logger, msg_prefix: str = ""):
     """
-    Temporarily prepends logged messages with the given string.
+    Temporarily prepends logged messages (if string) with the given string.
 
     Args:
         logger: logger to prepend msg_prefix to.
@@ -49,7 +49,8 @@ def logPrefixFilter(logger: logging.Logger, msg_prefix: str = ""):
     """
 
     def _filter(record: logging.LogRecord):
-        record.msg = str(msg_prefix) + record.msg
+        if isinstance(record.msg, str):
+            record.msg = str(msg_prefix) + record.msg
         return record
 
     try:
