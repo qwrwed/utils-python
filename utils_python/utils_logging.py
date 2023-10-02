@@ -1,17 +1,30 @@
 import logging
 from contextlib import contextmanager
-from typing import Optional as Opt
+from logging.config import fileConfig
+from pathlib import Path
 from typing import Type
 
 LOG_DATEFMT = "%Y-%m-%dT%H:%M:%S"
 LOG_FORMAT = "%(asctime)s.%(msecs)03d %(filename)s:%(lineno)s %(levelname)s %(name)s %(funcName)s(): %(message)s"
 
 
-def setup_logging():
+def setup_root_logger():
     """
     sets up root logger, e.g. `logging.info("test")`
     """
     setup_logger()
+
+
+def setup_config_logging(config_path: Path | str) -> None:
+    """
+    sets up logging via fileConfig
+    """
+    if not isinstance(config_path, Path):
+        config_path = Path(config_path)
+    if not config_path.is_file():
+        path = config_path if config_path.is_absolute() else config_path.resolve()
+        raise FileNotFoundError(f"No such file or directory: '{path}")
+    fileConfig(config_path, disable_existing_loggers=False)
 
 
 def setup_logger(

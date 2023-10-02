@@ -1,9 +1,17 @@
 import json
+import logging
 from copy import deepcopy
+from typing import Iterable
+
+LOGGER = logging.getLogger(__name__)
 
 
 def flatten(l: list[list]):
     return [item for sublist in l for item in sublist]
+
+
+def sort_dict(d, sortkey=lambda x: x):
+    return {key: dict(sorted(d[key].items(), key=sortkey)) for key in sorted(d)}
 
 
 def deduplicate(l: list):
@@ -14,26 +22,15 @@ def deduplicate(l: list):
     return l_deduplicated
 
 
-def serialize_data(data: any, indent=4, default=str):
-    if isinstance(data, str):
-        data_str = data
-    else:
-        try:
-            data_str = json.dumps(data, indent=indent, default=default)
-        except TypeError:
-            data_str = json.dumps(stringify_keys(data), indent=indent, default=default)
-    return data_str
-
-
-def dump_data(data: any, filepath="tmp.json", mode="w"):
-    data_str = serialize_data(data)
-    with open(filepath, mode) as f:
-        f.write(data_str)
+def is_iterable(obj, excluded_types=None):
+    if excluded_types is None:
+        excluded_types = [str]
+    return isinstance(obj, Iterable) and not isinstance(obj, excluded_types)
 
 
 def stringify_keys(d: dict):
     """
-    Convert a dict's keys to strings if they are not.
+    Convert a dict's keys to strings if they are not already.
     https://stackoverflow.com/a/51051641
     """
     d_copy = deepcopy(d)
@@ -57,3 +54,14 @@ def stringify_keys(d: dict):
             # delete old key
             del d_copy[key]
     return d_copy
+
+
+def serialize_data(data: any, indent=4, default=str):
+    if isinstance(data, str):
+        data_str = data
+    else:
+        try:
+            data_str = json.dumps(data, indent=indent, default=default)
+        except TypeError:
+            data_str = json.dumps(stringify_keys(data), indent=indent, default=default)
+    return data_str

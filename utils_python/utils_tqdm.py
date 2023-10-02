@@ -2,8 +2,10 @@ import logging
 
 from tqdm import tqdm
 
-from .logging import setup_logger
-from .typing import copy_signature
+from .utils_logging import setup_logger
+from .utils_typing import copy_signature
+
+LOGGER = logging.getLogger(__name__)
 
 
 class TqdmLoggingHandler(logging.StreamHandler):

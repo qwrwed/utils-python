@@ -1,5 +1,7 @@
+import logging
 from typing import Callable, TypeVar
 
+LOGGER = logging.getLogger(__name__)
 C = TypeVar("C", bound=Callable)  # parameterize over all callables
 
 
