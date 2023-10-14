@@ -123,7 +123,7 @@ def write_at_exit(
     indent: int | None = 4,
     overwrite: bool = False,
     default_encode: Callable = str,
-    write_if_empty=False,
+    write_empty=False,
     no_warning=False,
 ):
     if filepath is None:
@@ -148,9 +148,18 @@ def write_at_exit(
         yield
 
     finally:
-        if obj or write_if_empty:
+        if obj or write_empty:
             obj_str = truncate_str(str(obj), 30)
             LOGGER.info(f"Writing {type(obj)} {obj_str} to {filepath}")
-            dump_data(serialize_data(obj, indent=indent, default=default_encode), filepath)
+            dump_data(
+                serialize_data(obj, indent=indent, default=default_encode), filepath
+            )
+        elif overwrite:
+            LOGGER.info(
+                f"Removing {filepath} as it is write_empty is False, but overwrite is True"
+            )
+            filepath.unlink()
         else:
-            LOGGER.info(f"Not writing {type(obj)} to {filepath} as it is empty and write_if_empty is False")
+            LOGGER.info(
+                f"Not writing {type(obj)} to {filepath} as it is empty and write_if_empty is False"
+            )
