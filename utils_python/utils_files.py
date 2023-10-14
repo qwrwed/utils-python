@@ -154,7 +154,7 @@ def write_at_exit(
             dump_data(
                 serialize_data(obj, indent=indent, default=default_encode), filepath
             )
-        elif overwrite:
+        elif overwrite and filepath.is_file():
             LOGGER.info(
                 f"Removing {filepath} as it is write_empty is False, but overwrite is True"
             )
