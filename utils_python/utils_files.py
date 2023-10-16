@@ -21,6 +21,20 @@ def dump_data(data: any, filepath="tmp.json", mode="w"):
         f.write(data_str)
 
 
+def run_on_paths(
+    paths: list[Path],
+    file_callback: Optional[Callable[[Path], Any]] = None,
+    dir_callback: Optional[Callable[[Path], Any]] = None,
+    depth=0,
+):
+    results = {}
+    for path in (pbar := tqdm(paths, leave=depth == 0)):
+        pbar.set_description(str(path))
+        path_dict = run_on_path(path, file_callback, dir_callback, depth + 1)
+        results.update(path_dict)
+    return results
+
+
 def run_on_path(
     path: Path,
     file_callback: Optional[Callable[[Path], Any]] = None,
