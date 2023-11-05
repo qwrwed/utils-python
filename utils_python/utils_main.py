@@ -20,6 +20,8 @@ def identity(e):
 
 
 def get_platform() -> str:
+    if hasattr(sys, "getandroidapilevel"):
+        return "android"
     return platform.system().lower()
 
 
