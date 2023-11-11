@@ -5,7 +5,7 @@ from contextlib import contextmanager
 from logging.config import fileConfig
 from os import PathLike
 from pathlib import Path
-from typing import Type
+from typing import Type, TypeVar
 
 LOG_DATEFMT = r"%Y-%m-%dT%H:%M:%S"
 LOG_FORMAT = "%(asctime)s.%(msecs)03d %(filename)s:%(lineno)s %(levelname)s %(name)s %(funcName)s(): %(message)s"
@@ -91,3 +91,14 @@ def logPrefixFilter(logger: logging.Logger, msg_prefix: str = ""):
         yield
     finally:
         logger.removeFilter(_filter)
+
+
+_LoggerType = TypeVar("_LoggerType", bound=logging.Logger)
+
+
+def get_logger_with_class(
+    name: str | None = None, klass: _LoggerType | None = None
+) -> logging.Logger | _LoggerType:
+    if klass is not None:
+        logging.setLoggerClass(klass)
+    return logging.getLogger(name)
