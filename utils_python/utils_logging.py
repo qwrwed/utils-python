@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from contextlib import contextmanager
 from logging.config import fileConfig
+from os import PathLike
 from pathlib import Path
 from typing import Type
 
@@ -27,6 +28,23 @@ def setup_config_logging(config_path: Path | str) -> None:
         path = config_path if config_path.is_absolute() else config_path.resolve()
         raise FileNotFoundError(f"No such file or directory: '{path}")
     fileConfig(config_path, disable_existing_loggers=False)
+
+
+class FolderCreatingFileHandler(logging.FileHandler):
+    # https://stackoverflow.com/questions/20666764/python-logging-how-to-ensure-logfile-directory-is-created/20667049#20667049
+    # creates log directory if it doesn't exist
+    def __init__(
+        self,
+        filename: str | PathLike[str],
+        mode: str = "a",
+        encoding: str | None = None,
+        delay: bool = False,
+        errors: str | None = None,
+    ) -> None:
+        parent_dir = Path(filename).parent
+        if not parent_dir.is_dir():
+            parent_dir.mkdir()
+        super().__init__(filename, mode, encoding, delay, errors)
 
 
 def setup_logger(
