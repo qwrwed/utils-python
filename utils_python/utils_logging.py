@@ -6,7 +6,7 @@ from logging.config import fileConfig
 from pathlib import Path
 from typing import Type
 
-LOG_DATEFMT = "%Y-%m-%dT%H:%M:%S"
+LOG_DATEFMT = r"%Y-%m-%dT%H:%M:%S"
 LOG_FORMAT = "%(asctime)s.%(msecs)03d %(filename)s:%(lineno)s %(levelname)s %(name)s %(funcName)s(): %(message)s"
 
 
