@@ -71,8 +71,13 @@ def run_on_path(
 
 
 def read_list_from_file(
-    filepath: Path, element_fn=identity, deduplicate_list=True, optional=True
+    filepath: Path | str,
+    element_fn=identity,
+    deduplicate_list=True,
+    optional=True,
 ):
+    if not isinstance(filepath, Path):
+        filepath = Path(filepath)
     if not filepath.is_file():
         if optional:
             return []
@@ -107,8 +112,13 @@ def read_list_from_file(
 
 
 def read_dict_from_file(
-    filepath: Path, key_fn=identity, value_fn=identity, optional=True
+    filepath: Path | str,
+    key_fn=identity,
+    value_fn=identity,
+    optional=True,
 ):
+    if not isinstance(filepath, Path):
+        filepath = Path(filepath)
     if not filepath.is_file():
         if optional:
             return {}
