@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import shutil
 from contextlib import contextmanager
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional
+from zipfile import ZipFile
 
 import requests
 from tqdm import tqdm
@@ -221,3 +223,26 @@ def download(url, filepath, verbose=True):
             shutil.copyfileobj(r_raw, f)
 
     return path
+
+
+def unzip(
+    zipped_file: Path | str,
+    class_=ZipFile,
+    extract_dir: Path | str | None = None,
+):
+    if extract_dir is not None:
+        extract_dir = Path(extract_dir)
+
+    with class_(Path(zipped_file), "r") as zip_ref:
+        zip_ref.extractall(extract_dir)
+
+
+@contextmanager
+def cd(newdir):
+    # https://stackoverflow.com/a/24176022
+    prevdir = os.getcwd()
+    os.chdir(os.path.expanduser(newdir))
+    try:
+        yield
+    finally:
+        os.chdir(prevdir)
