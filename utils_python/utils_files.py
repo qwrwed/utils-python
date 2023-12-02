@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import json
 import logging
+import shutil
 from contextlib import contextmanager
+from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Optional
 
+import requests
 from tqdm import tqdm
 
 from .utils_data import deduplicate, serialize_data
@@ -187,3 +190,34 @@ def write_at_exit(
             LOGGER.info(
                 f"Not writing {type(obj)} to {filepath} as it is empty and write_if_empty is False"
             )
+
+
+def make_parent_dir(filepath: str | Path):
+    Path(filepath).parent.mkdir(exist_ok=True, parents=True)
+
+
+def download(url, filepath, verbose=True):
+    """
+    Download URL to filepath
+    """
+    # https://stackoverflow.com/a/63831344
+
+    if verbose:
+        LOGGER.info(f"Downloading {url} to {filepath}")
+
+    r = requests.get(url, stream=True, allow_redirects=True)
+    if r.status_code != 200:
+        r.raise_for_status()  # Will only raise for 4xx codes, so...
+        raise RuntimeError(f"Request to {url} returned status code {r.status_code}")
+    file_size = int(r.headers.get("Content-Length", 0))
+
+    path = Path(filepath).expanduser().resolve()
+    make_parent_dir(path)
+
+    desc = "(Unknown total file size)" if file_size == 0 else ""
+    r.raw.read = partial(r.raw.read, decode_content=True)  # Decompress if needed
+    with tqdm.wrapattr(r.raw, "read", total=file_size, desc=desc) as r_raw:
+        with path.open("wb") as f:
+            shutil.copyfileobj(r_raw, f)
+
+    return path
