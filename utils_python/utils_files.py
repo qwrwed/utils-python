@@ -23,7 +23,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def dump_data(
-    data: any,
+    data: Any,
     filepath: PathInput = "tmp.json",
     mode="w",
 ):

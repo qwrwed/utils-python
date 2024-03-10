@@ -99,7 +99,7 @@ _LoggerType = TypeVar("_LoggerType", bound=logging.Logger)
 
 
 def get_logger_with_class(
-    name: str | None = None, klass: _LoggerType | None = None
+    name: str | None = None, klass: type[_LoggerType] | None = None
 ) -> logging.Logger | _LoggerType:
     if klass is not None:
         logging.setLoggerClass(klass)

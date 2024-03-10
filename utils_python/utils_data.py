@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import logging
 from copy import deepcopy
-from typing import Iterable
+from typing import Any, Iterable
 
 LOGGER = logging.getLogger(__name__)
 
@@ -58,7 +58,7 @@ def stringify_keys(d: dict):
     return d_copy
 
 
-def serialize_data(data: any, indent=4, default=str):
+def serialize_data(data: Any, indent=4, default=str):
     if isinstance(data, str):
         data_str = data
     else:
