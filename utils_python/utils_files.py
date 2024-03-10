@@ -13,6 +13,8 @@ from zipfile import ZipFile
 import requests
 from tqdm import tqdm
 
+from utils_python.utils_typing import PathInput
+
 from .utils_data import deduplicate, serialize_data
 from .utils_main import identity
 from .utils_strings import truncate_str
@@ -20,7 +22,11 @@ from .utils_strings import truncate_str
 LOGGER = logging.getLogger(__name__)
 
 
-def dump_data(data: any, filepath="tmp.json", mode="w"):
+def dump_data(
+    data: any,
+    filepath: PathInput = "tmp.json",
+    mode="w",
+):
     data_str = serialize_data(data)
     with open(filepath, mode) as f:
         f.write(data_str)
@@ -76,7 +82,7 @@ def run_on_path(
 
 
 def read_list_from_file(
-    filepath: Path | str,
+    filepath: PathInput,
     element_fn=identity,
     deduplicate_list=True,
     optional=True,
@@ -117,7 +123,7 @@ def read_list_from_file(
 
 
 def read_dict_from_file(
-    filepath: Path | str,
+    filepath: PathInput,
     key_fn=identity,
     value_fn=identity,
     optional=True,
@@ -148,7 +154,7 @@ def read_dict_from_file(
 @contextmanager
 def write_at_exit(
     obj,
-    filepath: Path | str | None,
+    filepath: PathInput | None,
     indent: int | None = 4,
     overwrite: bool = False,
     default_encode: Callable = str,
@@ -226,9 +232,9 @@ def download(url, filepath, verbose=True):
 
 
 def unzip(
-    zipped_file: Path | str,
+    zipped_file: PathInput,
     class_=ZipFile,
-    extract_dir: Path | str | None = None,
+    extract_dir: PathInput | None = None,
 ):
     if extract_dir is not None:
         extract_dir = Path(extract_dir)

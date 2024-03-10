@@ -7,6 +7,8 @@ from os import PathLike
 from pathlib import Path
 from typing import Type, TypeVar
 
+from utils_python.utils_typing import PathInput
+
 LOG_DATEFMT = r"%Y-%m-%dT%H:%M:%S"
 LOG_FORMAT = "%(asctime)s.%(msecs)03d %(filename)s:%(lineno)s %(levelname)s %(name)s %(funcName)s(): %(message)s"
 
@@ -18,7 +20,7 @@ def setup_root_logger():
     setup_logger()
 
 
-def setup_config_logging(config_path: Path | str) -> None:
+def setup_config_logging(config_path: PathInput) -> None:
     """
     sets up logging via fileConfig
     """

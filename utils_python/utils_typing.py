@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from os import PathLike
 from typing import Callable, TypeVar
 
 LOGGER = logging.getLogger(__name__)
@@ -22,3 +23,6 @@ def copy_signature(template: C) -> Callable[[C], C]:
         return target
 
     return apply_signature
+
+
+PathInput = PathLike | str
