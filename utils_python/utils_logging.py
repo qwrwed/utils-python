@@ -13,11 +13,11 @@ LOG_DATEFMT = r"%Y-%m-%dT%H:%M:%S"
 LOG_FORMAT = "%(asctime)s.%(msecs)03d %(filename)s:%(lineno)s %(levelname)s %(name)s %(funcName)s(): %(message)s"
 
 
-def setup_root_logger():
+def setup_root_logger(level=logging.INFO):
     """
     sets up root logger, e.g. `logging.info("test")`
     """
-    setup_logger()
+    setup_logger(level=level)
 
 
 def setup_config_logging(config_path: PathInput) -> None:
