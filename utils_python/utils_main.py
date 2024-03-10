@@ -66,7 +66,7 @@ def make_get_request_to_url(
         if response.status_code == 404:  # NOT_FOUND
             return None
         LOGGER.info(
-            f"unhandled HTTP error: code={response.status_code!r}, msg={response.json()['error']!r}, url={response.url!r}"
+            f"unhandled HTTP error: code={response.status_code!r}, msg={response.text!r}, url={response.url!r}"
         )
         breakpoint()
         return None
