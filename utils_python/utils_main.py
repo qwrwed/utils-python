@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import json
 import logging
 import platform
 import sys
 import time
-import urllib.request
-from urllib.error import HTTPError
+
+import requests
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,36 +44,33 @@ def setup_excepthook(logger: logging.Logger, keyboardinterrupt_log_str):
 last_requests: dict[str | None, float] = {}
 
 
-def make_get_request_to_url(url: str, src_key: str | None = None):
+def make_get_request_to_url(
+    url: str, src_key: str | None = None, delay=None, parse_json=False
+):
     LOGGER.debug(f"making GET request to {url}")
     last_request = last_requests.get(src_key)
     # TODO: remove src_key, get website from url instead
-    if last_request is not None and time.time() - last_request <= 1:
-        time.sleep(1)
+    if delay and last_request is not None and time.time() - last_request <= 1:
+        time.sleep(delay)
     while True:
-        try:
-            last_requests[src_key] = time.time()
-            req = urllib.request.Request(url)
-            req.add_header(
-                "User-Agent",
-                "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7",
-            )
-            with urllib.request.urlopen(req) as url_open:
-                res_bytes = url_open.read()
+        last_requests[src_key] = time.time()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"
+        }
+        response = requests.get(url, headers=headers)
+        if response.ok:
             break
-        except HTTPError as exc:
-            if exc.code == 429:  # TOO_MANY_REQUESTS
-                time.sleep(1)
-                continue
-            if exc.code == 404:  # NOT_FOUND
-                return None
-            LOGGER.info(
-                f"unhandled HTTP error code={exc.code!r} msg={exc.msg!r} url={exc.url!r}"
-            )
-            breakpoint()
+        if response.status_code == 429:  # TOO_MANY_REQUESTS
+            time.sleep(1)
+            continue
+        if response.status_code == 404:  # NOT_FOUND
             return None
-    res_str = res_bytes.decode()
-    try:
-        return json.loads(res_str)
-    except json.decoder.JSONDecodeError:
-        return res_str
+        LOGGER.info(
+            f"unhandled HTTP error: code={response.status_code!r}, msg={response.json()['error']!r}, url={response.url!r}"
+        )
+        breakpoint()
+        return None
+    if parse_json:
+        return response.json()
+    else:
+        return response.text
