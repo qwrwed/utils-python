@@ -22,12 +22,10 @@ from .utils_strings import truncate_str
 LOGGER = logging.getLogger(__name__)
 
 
-def dump_data(
-    data: Any,
-    filepath: PathInput = "tmp.json",
-    mode="w",
-):
+def dump_data(data: Any, filepath: PathInput = "tmp.json", mode="w", make_dir=True):
     data_str = serialize_data(data)
+    if make_dir:
+        make_parent_dir(filepath)
     with open(filepath, mode) as f:
         f.write(data_str)
 
