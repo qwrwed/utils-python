@@ -63,13 +63,7 @@ def make_get_request_to_url(
         if response.status_code == 429:  # TOO_MANY_REQUESTS
             time.sleep(1)
             continue
-        if response.status_code == 404:  # NOT_FOUND
-            return None
-        LOGGER.info(
-            f"unhandled HTTP error: code={response.status_code!r}, msg={response.text!r}, url={response.url!r}"
-        )
-        breakpoint()
-        return None
+        response.raise_for_status()
     if parse_json:
         return response.json()
     else:
