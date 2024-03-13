@@ -45,13 +45,13 @@ last_requests: dict[str | None, float] = {}
 
 
 def make_get_request_to_url(
-    url: str, src_key: str | None = None, delay=None, parse_json=False
+    url: str, src_key: str | None = None, min_delay=None, parse_json=False
 ):
     LOGGER.debug(f"making GET request to {url}")
     last_request = last_requests.get(src_key)
     # TODO: remove src_key, get website from url instead
-    if delay and last_request is not None and time.time() - last_request <= 1:
-        time.sleep(delay)
+    if min_delay and last_request is not None and time.time() - last_request <= 1:
+        time.sleep(min_delay)
     while True:
         last_requests[src_key] = time.time()
         headers = {
