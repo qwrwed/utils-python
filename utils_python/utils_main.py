@@ -4,6 +4,7 @@ import logging
 import platform
 import sys
 import time
+from typing import Literal
 
 import requests
 
@@ -45,7 +46,10 @@ last_requests: dict[str | None, float] = {}
 
 
 def make_get_request_to_url(
-    url: str, src_key: str | None = None, min_delay=None, parse_json=False
+    url: str,
+    src_key: str | None = None,
+    min_delay=None,
+    format: Literal["text", "json", "bytes"] = "text",
 ):
     LOGGER.debug(f"making GET request to {url}")
     last_request = last_requests.get(src_key)
@@ -64,7 +68,9 @@ def make_get_request_to_url(
             time.sleep(1)
             continue
         response.raise_for_status()
-    if parse_json:
-        return response.json()
-    else:
+    if format == "text":
         return response.text
+    elif format == "json":
+        return response.json()
+    elif format == "bytes":
+        return response.content
