@@ -23,11 +23,11 @@ LOGGER = logging.getLogger(__name__)
 
 
 def dump_data(data: Any, filepath: PathInput = "tmp.json", mode="w", make_dir=True):
-    data_str = serialize_data(data)
+    data_serialized = data if "b" in mode else serialize_data(data)
     if make_dir:
         make_parent_dir(filepath)
     with open(filepath, mode) as f:
-        f.write(data_str)
+        f.write(data_serialized)
 
 
 def run_on_paths(
