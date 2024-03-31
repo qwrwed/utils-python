@@ -7,6 +7,7 @@ from os import PathLike
 from pathlib import Path
 from typing import Type, TypeVar
 
+from utils_python.utils_files import make_parent_dir
 from utils_python.utils_typing import PathInput
 
 LOG_DATEFMT = r"%Y-%m-%dT%H:%M:%S"
@@ -18,6 +19,12 @@ def setup_root_logger(level=logging.INFO):
     sets up root logger, e.g. `logging.info("test")`
     """
     setup_logger(level=level)
+
+
+class DirCreatingFileHandler(logging.FileHandler):
+    def __init__(self, filename, *args, **kwargs) -> None:
+        make_parent_dir(filename)
+        return super().__init__(filename, *args, **kwargs)
 
 
 def setup_config_logging(config_path: PathInput) -> None:
