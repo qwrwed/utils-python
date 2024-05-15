@@ -26,7 +26,7 @@ def deduplicate(l: list):
 
 def is_iterable(obj, excluded_types=None):
     if excluded_types is None:
-        excluded_types = [str]
+        excluded_types = (str)
     return isinstance(obj, Iterable) and not isinstance(obj, excluded_types)
 
 
