@@ -33,33 +33,41 @@ def dump_data(
     if make_dir:
         make_parent_dir(filepath)
     if rotate:
-        save_rotate(data_serialized, filepath, mode)
-    else:
-        with open(filepath, mode) as f:
-            f.write(data_serialized)
+        rotate_file(filepath)
+    with open(filepath, mode) as f:
+        f.write(data_serialized)
 
 
-def save_rotate(
-    contents: str,
+def rotate_file(
     filepath: PathInput,
-    mode="w",
+    maximum_rotations=None,
 ):
     orig_path = Path(filepath)
-    if orig_path.is_file():
-        renames: dict[Path, Path] = {}
-        i = 1
-        src_path = orig_path
-        while True:
-            dest_path = orig_path.with_stem(orig_path.stem + f".{i}")
-            renames[src_path] = dest_path
-            if not dest_path.is_file():
-                break
-            src_path = dest_path
-            i += 1
-        for src_path, dest_path in reversed(renames.items()):
-            src_path.rename(dest_path)
-    with open(orig_path, mode) as f:
-        f.write(contents)
+    if not orig_path.is_file():
+        return
+    deletes: set[Path] = set()
+    renames: dict[Path, Path] = {}
+    i = 1
+    src_path = orig_path
+    while True:
+        dest_path = orig_path.with_stem(orig_path.stem + f".{i}")
+        renames[src_path] = dest_path
+        if (
+            maximum_rotations is not None
+            and i >= maximum_rotations
+            and dest_path.is_file()
+        ):
+            deletes.add(dest_path)
+        if not dest_path.is_file():
+            break
+        src_path = dest_path
+        i += 1
+    for path in deletes:
+        path.unlink()
+        if path in renames:
+            del renames[path]
+    for src_path, dest_path in reversed(renames.items()):
+        src_path.rename(dest_path)
 
 
 def run_on_paths(
