@@ -22,12 +22,44 @@ from .utils_strings import truncate_str
 LOGGER = logging.getLogger(__name__)
 
 
-def dump_data(data: Any, filepath: PathInput = "tmp.json", mode="w", make_dir=True):
+def dump_data(
+    data: Any,
+    filepath: PathInput = "tmp.json",
+    mode="w",
+    make_dir=True,
+    rotate=False,
+):
     data_serialized = data if "b" in mode else serialize_data(data)
     if make_dir:
         make_parent_dir(filepath)
-    with open(filepath, mode) as f:
-        f.write(data_serialized)
+    if rotate:
+        save_rotate(data_serialized, filepath, mode)
+    else:
+        with open(filepath, mode) as f:
+            f.write(data_serialized)
+
+
+def save_rotate(
+    contents: str,
+    filepath: PathInput,
+    mode="w",
+):
+    orig_path = Path(filepath)
+    if orig_path.is_file():
+        renames: dict[Path, Path] = {}
+        i = 1
+        src_path = orig_path
+        while True:
+            dest_path = orig_path.with_stem(orig_path.stem + f".{i}")
+            renames[src_path] = dest_path
+            if not dest_path.is_file():
+                break
+            src_path = dest_path
+            i += 1
+        for src_path, dest_path in reversed(renames.items()):
+            src_path.rename(dest_path)
+    with open(orig_path, mode) as f:
+        f.write(contents)
 
 
 def run_on_paths(
