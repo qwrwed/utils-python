@@ -6,10 +6,10 @@ requires = [
 
 [project]
 name="utils_python"
-version="1.14.0"
+version="1.14.1"
 dependencies = [
-    "requests ~= 2.31.0",
-    "tqdm ~= 4.66.1",
+    "requests ~= 2.31",
+    "tqdm ~= 4.66",
 ]
 
 [tool.isort]
