@@ -5,12 +5,14 @@ import logging
 import os
 import shutil
 from contextlib import contextmanager
+from datetime import datetime
 from functools import partial
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Generator, Optional
 from zipfile import ZipFile
 
 import requests
+from filedate import File as FileDateObj
 from tqdm import tqdm
 
 from utils_python.utils_typing import PathInput
@@ -290,3 +292,53 @@ def cd(newdir):
         yield
     finally:
         os.chdir(prevdir)
+
+
+@contextmanager
+def preserve_filedate(
+    filepath: Path,
+    created=True,
+    modified=True,
+    accessed=False,
+) -> Generator[None, None, None]:
+    """
+    Context manager which allows a file to be modified, recreated or accessed
+     without changing the timestamp(s) associated with that file
+    """
+    file_date = FileDateObj(filepath)
+    original_times = file_date.get().copy()
+
+    if not created:
+        del original_times["created"]
+    if not modified:
+        del original_times["modified"]
+    if not accessed:
+        del original_times["accessed"]
+
+    yield
+    new_times = {**file_date.get(), **original_times}
+    file_date.set(**new_times)
+
+
+def update_filedate_created(
+    filepath: Path,
+    new_time: datetime,
+) -> None:
+    file_date = FileDateObj(filepath)
+    file_date.created = new_time
+
+
+def update_filedate_modified(
+    filepath: Path,
+    new_time: datetime,
+) -> None:
+    file_date = FileDateObj(filepath)
+    file_date.modified = new_time
+
+
+def update_filedate_accessed(
+    filepath: Path,
+    new_time: datetime,
+) -> None:
+    file_date = FileDateObj(filepath)
+    file_date.accessed = new_time
