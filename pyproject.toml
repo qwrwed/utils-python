@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "utils-python"
-version = "1.15.0"
+version = "1.15.1"
 description = ""
 authors = ["qwrwed <2429893+qwrwed@users.noreply.github.com>"]
 # readme = "README.md"
