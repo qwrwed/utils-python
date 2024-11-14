@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "utils-python"
-version = "1.17.0"
+version = "1.17.1"
 description = ""
 authors = ["qwrwed <2429893+qwrwed@users.noreply.github.com>"]
 # readme = "README.md"
@@ -8,6 +8,7 @@ authors = ["qwrwed <2429893+qwrwed@users.noreply.github.com>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 filedate = "^3.0"
+mutagen = "^1.47.0"
 requests = "^2.31.3"
 tqdm = "^4.66.0"
 
