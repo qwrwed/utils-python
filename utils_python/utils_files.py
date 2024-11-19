@@ -320,6 +320,27 @@ def preserve_filedate(
     file_date.set(**new_times)
 
 
+def copy_filedate(
+    file_from: Path,
+    file_to: Path,
+    created=True,
+    modified=True,
+    accessed=False,
+):
+    file_date_from = FileDateObj(file_from)
+    original_times = file_date_from.get()
+
+    if not created:
+        del original_times["created"]
+    if not modified:
+        del original_times["modified"]
+    if not accessed:
+        del original_times["accessed"]
+
+    file_date_to = FileDateObj(file_to)
+    file_date_to.set(**original_times)
+
+
 def update_filedate_created(
     filepath: Path,
     new_time: datetime,
