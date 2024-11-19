@@ -42,17 +42,24 @@ def dump_data(
 
 def rotate_file(
     filepath: PathInput,
-    maximum_rotations=None,
+    maximum_rotations: int | None = None,
+    add_extension: str | None = None,
 ):
     orig_path = Path(filepath)
     if not orig_path.is_file():
-        return
+        raise FileNotFoundError(orig_path)
     deletes: set[Path] = set()
     renames: dict[Path, Path] = {}
     i = 1
     src_path = orig_path
     while True:
-        dest_path = orig_path.with_stem(orig_path.stem + f".{i}")
+        dest_stem = orig_path.stem + f".{i}"
+        dest_suffix = orig_path.suffix
+        if add_extension is not None:
+            if not add_extension.startswith("."):
+                add_extension = f".{add_extension}"
+            dest_suffix += add_extension
+        dest_path = orig_path.with_stem(dest_stem).with_suffix(dest_suffix)
         renames[src_path] = dest_path
         if (
             maximum_rotations is not None
