@@ -26,35 +26,29 @@ def deduplicate(l: list):
 
 def is_iterable(obj, excluded_types=None):
     if excluded_types is None:
-        excluded_types = (str)
+        excluded_types = (str,)
     return isinstance(obj, Iterable) and not isinstance(obj, excluded_types)
 
 
 def stringify_keys(d: dict):
     """
     Convert a dict's keys to strings if they are not already.
-    https://stackoverflow.com/a/51051641
     """
-    d_copy = deepcopy(d)
-    for key in d.keys():
-        # check inner dict
-        if isinstance(d[key], dict):
-            value = stringify_keys(d[key])
-        else:
-            value = d[key]
-
-        # convert nonstring to string if needed
+    d_copy = {}
+    for key, value in d.items():
+        # Convert non-string keys to strings
         if not isinstance(key, str):
             try:
-                d_copy[str(key)] = value
+                key = str(key)
             except Exception:
-                try:
-                    d_copy[repr(key)] = value
-                except Exception:
-                    raise
+                key = repr(key)
 
-            # delete old key
-            del d_copy[key]
+        # Recursively process nested dictionaries
+        if isinstance(value, dict):
+            value = stringify_keys(value)
+
+        d_copy[key] = value
+
     return d_copy
 
 
