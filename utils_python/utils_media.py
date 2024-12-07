@@ -27,11 +27,18 @@ def set_tag_mp4_text(
 def get_tag_mp4_text(
     filepath: PathInput,
     key: str,
+    default=None,
+    required=False,
 ):
     filepath = Path(filepath)
     key = key.lower()
     if not key in get_registered_keys():
         EasyMP4Tags.RegisterFreeformKey(key, key.upper())
     mp4 = EasyMP4(filepath)
-    [value] = mp4[key]
+    if key in mp4:
+        [value] = mp4[key]
+    else:
+        if required:
+            raise KeyError[key]
+        value = default
     return value
