@@ -39,6 +39,6 @@ def get_tag_mp4_text(
         [value] = mp4[key]
     else:
         if required:
-            raise KeyError[key]
+            raise KeyError(key)
         value = default
     return value
