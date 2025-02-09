@@ -407,3 +407,26 @@ def update_filedate_accessed(
 ) -> None:
     file_date = FileDateObj(filepath)
     file_date.accessed = new_time
+
+
+def sanitize_filename_windows_style(name: str) -> str:
+    # sanitizes filenames like Windows 10's "Create Shortcut" does
+    s = ""
+    for c in name:
+        if c == "/":
+            s += "-"
+        elif c not in r"\:*?<>|":
+            s += c
+    return s
+
+
+def create_windows_url_shortcut(
+    url: str,
+    path: PathInput,
+) -> None:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.name.endswith(".url"):
+        path = path.with_name(path.name + ".url")
+    with open(path, "w", newline="\r\n") as f:
+        f.write(f"[InternetShortcut]\nURL={url}")

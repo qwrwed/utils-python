@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 
+import requests
 from tqdm import tqdm
 
 from .utils_logging import setup_logger
-from .utils_typing import copy_signature
+from .utils_typing import PathInput, copy_signature
 
 LOGGER = logging.getLogger(__name__)
 
@@ -43,3 +45,35 @@ def print_tqdm(*args, **kwargs):
     sep = kwargs.get("sep", " ")
     s = sep.join((str(arg) for arg in args))
     tqdm.write(s, **kwargs)
+
+
+def download_tqdm(
+    url: str,
+    filepath: PathInput,
+    position: int | None = None,
+    leave: bool = False,
+) -> None:
+    # https://stackoverflow.com/questions/37573483/progress-bar-while-download-file-over-http-with-requests/37573701#37573701
+    filepath = Path(filepath)
+
+    # Streaming, so we can iterate over the response.
+    response = requests.get(url, stream=True)
+
+    # Sizes in bytes.
+    total_size = int(response.headers.get("content-length", 0))
+    block_size = 1024
+    filepath.parent.mkdir(exist_ok=True, parents=True)
+    with tqdm(
+        total=total_size,
+        unit="B",
+        unit_scale=True,
+        position=position,
+        leave=leave,
+    ) as progress_bar:
+        with open(filepath, "wb") as file:
+            for data in response.iter_content(block_size):
+                progress_bar.update(len(data))
+                file.write(data)
+
+    if total_size != 0 and progress_bar.n != total_size:
+        raise RuntimeError("Could not download file")
