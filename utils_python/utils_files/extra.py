@@ -15,11 +15,12 @@ import requests
 from filedate import File as FileDateObj
 from tqdm import tqdm
 
+from utils_python.utils_data import deduplicate, serialize_data
+from utils_python.utils_files.base import make_parent_dir
+from utils_python.utils_main import identity
+from utils_python.utils_strings import truncate_str
+from utils_python.utils_tqdm import print_tqdm
 from utils_python.utils_typing import PathInput
-
-from .utils_data import deduplicate, serialize_data
-from .utils_main import identity
-from .utils_strings import truncate_str
 
 LOGGER = logging.getLogger(__name__)
 
@@ -93,6 +94,36 @@ def run_on_paths(
     return results
 
 
+def run_on_path_flat(
+    path: Path,
+    file_callback: Optional[Callable[[Path], Any]] = None,
+    dir_callback: Optional[Callable[[Path], Any]] = None,
+):
+    path = Path(path)
+    all_results = {}
+    for p in tqdm(list(path.rglob("*"))):
+        if p.is_file():
+            path_info = {"is_dir": False}
+            if file_callback is not None:
+                try:
+                    path_result = file_callback(path)
+                except Exception as exc:
+                    print_tqdm(f"ERROR running callback on file {path!r}")
+                    raise exc
+                path_info["result"] = path_result
+        elif p.is_dir():
+            path_info = {"is_dir": True}
+            if dir_callback is not None:
+                try:
+                    path_result = dir_callback(path)
+                except Exception as exc:
+                    print_tqdm(f"ERROR running callback on dir {path!r}")
+                    raise exc
+                path_info["result"] = path_result
+        all_results[p] = path_info
+    return all_results
+
+
 def run_on_path(
     path: Path,
     file_callback: Optional[Callable[[Path], Any]] = None,
@@ -105,12 +136,22 @@ def run_on_path(
     if path.is_file():
         path_results = {"is_dir": False}
         if file_callback is not None:
-            path_results["result"] = file_callback(path)
+            try:
+                path_result = file_callback(path)
+            except Exception as exc:
+                print_tqdm(f"ERROR running callback on file {path!r}")
+                raise exc
+            path_results["result"] = path_result
         return {path: path_results}
     if path.is_dir():
         path_results = {"is_dir": True}
         if dir_callback is not None:
-            path_results["result"] = dir_callback(path)
+            try:
+                dir_result = dir_callback(path)
+            except Exception as exc:
+                print_tqdm(f"ERROR running callback on dir {path!r}")
+                raise exc
+            path_results["result"] = dir_result
         subpath_results: dict[Path, dict[str, Any]] = {}
         subpaths = list(path.iterdir())
         with tqdm(subpaths, leave=depth == 0) as pbar:
@@ -245,10 +286,6 @@ def write_at_exit(
             LOGGER.info(
                 f"Not writing {type(obj)} to {filepath} as it is empty and write_if_empty is False"
             )
-
-
-def make_parent_dir(filepath: str | Path):
-    Path(filepath).parent.mkdir(exist_ok=True, parents=True)
 
 
 def download(url, filepath, verbose=True):
