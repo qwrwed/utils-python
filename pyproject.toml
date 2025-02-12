@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "utils-python"
-version = "1.22.0"
+version = "1.23.0"
 description = ""
 authors = ["qwrwed <2429893+qwrwed@users.noreply.github.com>"]
 # readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 filedate = "^3.0"
 mutagen = "^1.47.0"
 requests = "^2.31.3"
