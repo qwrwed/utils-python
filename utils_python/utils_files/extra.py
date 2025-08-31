@@ -31,13 +31,14 @@ def dump_data(
     mode="w",
     make_dir=True,
     rotate=False,
+    encoding="utf-8",
 ):
     data_serialized = data if "b" in mode else serialize_data(data)
     if make_dir:
         make_parent_dir(filepath)
     if rotate:
         rotate_file(filepath)
-    with open(filepath, mode) as f:
+    with open(filepath, mode, encoding=encoding) as f:
         f.write(data_serialized)
 
 
@@ -174,6 +175,7 @@ def read_list_from_file(
     element_fn=identity,
     deduplicate_list=True,
     optional=True,
+    encoding="utf-8",
 ):
     if not isinstance(filepath, Path):
         filepath = Path(filepath)
@@ -182,7 +184,7 @@ def read_list_from_file(
             return []
         raise FileNotFoundError(f"Tried to read from {filepath}, but it was not a file")
 
-    with open(filepath) as f:
+    with open(filepath, encoding=encoding) as f:
         file_lines_str = f.readlines()
 
     try:
@@ -215,6 +217,7 @@ def read_dict_from_file(
     key_fn=identity,
     value_fn=identity,
     optional=True,
+    encoding="utf-8",
 ):
     if not isinstance(filepath, Path):
         filepath = Path(filepath)
@@ -223,7 +226,7 @@ def read_dict_from_file(
             return {}
         raise FileNotFoundError(f"Tried to read from {filepath}, but it was not a file")
 
-    with open(filepath) as f:
+    with open(filepath, encoding=encoding) as f:
         file_contents = f.read()
 
     if not file_contents:
