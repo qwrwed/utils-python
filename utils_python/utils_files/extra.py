@@ -102,7 +102,11 @@ def run_on_path_flat(
 ):
     path = Path(path)
     all_results = {}
-    for p in tqdm(list(path.rglob("*"))):
+    if path.is_file():
+        paths = [path]
+    else:
+        paths = list(path.rglob("*"))
+    for p in tqdm(paths):
         if p.is_file():
             path_info = {"is_dir": False}
             if file_callback is not None:
