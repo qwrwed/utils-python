@@ -107,18 +107,18 @@ def run_on_path_flat(
             path_info = {"is_dir": False}
             if file_callback is not None:
                 try:
-                    path_result = file_callback(path)
+                    path_result = file_callback(p)
                 except Exception as exc:
-                    print_tqdm(f"ERROR running callback on file {path!r}")
+                    print_tqdm(f"ERROR running callback on file {p!r}")
                     raise exc
                 path_info["result"] = path_result
         elif p.is_dir():
             path_info = {"is_dir": True}
             if dir_callback is not None:
                 try:
-                    path_result = dir_callback(path)
+                    path_result = dir_callback(p)
                 except Exception as exc:
-                    print_tqdm(f"ERROR running callback on dir {path!r}")
+                    print_tqdm(f"ERROR running callback on dir {p!r}")
                     raise exc
                 path_info["result"] = path_result
         all_results[p] = path_info
