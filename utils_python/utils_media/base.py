@@ -8,6 +8,19 @@ from utils_python.utils_typing import PathInput
 def get_registered_keys() -> set[str]:
     return EasyMP4.Get.keys() & EasyMP4.Set.keys() & EasyMP4.Delete.keys()
 
+def del_tag_mp4_text(
+    filepath: PathInput,
+    key: str,
+):
+    filepath = Path(filepath)
+    key = key.lower()
+    if not key in get_registered_keys():
+        EasyMP4Tags.RegisterFreeformKey(key, key.upper())
+    mp4 = EasyMP4(filepath)
+    if key in mp4:
+        del mp4[key]
+    mp4.save()
+
 
 def set_tag_mp4_text(
     filepath: PathInput,
