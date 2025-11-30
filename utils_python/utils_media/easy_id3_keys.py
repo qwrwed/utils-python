@@ -1,3 +1,33 @@
+from mutagen.easyid3 import (
+    date_delete,
+    date_get,
+    date_set,
+    gain_delete,
+    gain_get,
+    gain_set,
+    genre_delete,
+    genre_get,
+    genre_set,
+    musicbrainz_trackid_delete,
+    musicbrainz_trackid_get,
+    musicbrainz_trackid_set,
+    original_date_delete,
+    original_date_get,
+    original_date_set,
+    peak_delete,
+    peak_get,
+    peak_set,
+    peakgain_list,
+    performer_delete,
+    performer_get,
+    performer_list,
+    performer_set,
+    website_delete,
+    website_get,
+    website_set,
+)
+from mutagen.id3._frames import COMM, TALB, TCON, TDRC, TIT2, TPE1, TRCK, TYER
+
 EasyID3TextKeys = {
     "TALB": ("album"),
     "TBPM": ("bpm"),
@@ -31,45 +61,38 @@ EasyID3TextKeys = {
 }
 
 EasyID3TXXXKeys = {
-    u"MusicBrainz Artist Id": ("musicbrainz_artistid"),
-    u"MusicBrainz Album Id": ("musicbrainz_albumid"),
-    u"MusicBrainz Album Artist Id": ("musicbrainz_albumartistid"),
-    u"MusicBrainz TRM Id": ("musicbrainz_trmid"),
-    u"MusicIP PUID": ("musicip_puid"),
-    u"MusicMagic Fingerprint": ("musicip_fingerprint"),
-    u"MusicBrainz Album Status": ("musicbrainz_albumstatus"),
-    u"MusicBrainz Album Type": ("musicbrainz_albumtype"),
-    u"MusicBrainz Album Release Country": ("releasecountry"),
-    u"MusicBrainz Disc Id": ("musicbrainz_discid"),
-    u"ASIN": ("asin"),
-    u"ALBUMARTISTSORT": ("albumartistsort"),
-    u"PERFORMER": ("performer"),
-    u"BARCODE": ("barcode"),
-    u"CATALOGNUMBER": ("catalognumber"),
-    u"MusicBrainz Release Track Id": ("musicbrainz_releasetrackid"),
-    u"MusicBrainz Release Group Id": ("musicbrainz_releasegroupid"),
-    u"MusicBrainz Work Id": ("musicbrainz_workid"),
-    u"Acoustid Fingerprint": ("acoustid_fingerprint"),
-    u"Acoustid Id": ("acoustid_id"),
+    "MusicBrainz Artist Id": ("musicbrainz_artistid"),
+    "MusicBrainz Album Id": ("musicbrainz_albumid"),
+    "MusicBrainz Album Artist Id": ("musicbrainz_albumartistid"),
+    "MusicBrainz TRM Id": ("musicbrainz_trmid"),
+    "MusicIP PUID": ("musicip_puid"),
+    "MusicMagic Fingerprint": ("musicip_fingerprint"),
+    "MusicBrainz Album Status": ("musicbrainz_albumstatus"),
+    "MusicBrainz Album Type": ("musicbrainz_albumtype"),
+    "MusicBrainz Album Release Country": ("releasecountry"),
+    "MusicBrainz Disc Id": ("musicbrainz_discid"),
+    "ASIN": ("asin"),
+    "ALBUMARTISTSORT": ("albumartistsort"),
+    "PERFORMER": ("performer"),
+    "BARCODE": ("barcode"),
+    "CATALOGNUMBER": ("catalognumber"),
+    "MusicBrainz Release Track Id": ("musicbrainz_releasetrackid"),
+    "MusicBrainz Release Group Id": ("musicbrainz_releasegroupid"),
+    "MusicBrainz Work Id": ("musicbrainz_workid"),
+    "Acoustid Fingerprint": ("acoustid_fingerprint"),
+    "Acoustid Id": ("acoustid_id"),
 }
 
-from mutagen.easyid3 import(
-    genre_get, genre_set, genre_delete,
-    date_get, date_set, date_delete,
-    original_date_get, original_date_set, original_date_delete,
-    performer_get, performer_set, performer_delete, performer_list,
-    musicbrainz_trackid_get, musicbrainz_trackid_set, musicbrainz_trackid_delete,
-    website_get, website_set, website_delete,
-    gain_get, gain_set, gain_delete, peakgain_list,
-    peak_get, peak_set, peak_delete,
-)
-
-EasyID3MiscKeys={
+EasyID3MiscKeys = {
     "genre": (genre_get, genre_set, genre_delete),
     "date": (date_get, date_set, date_delete),
     "originaldate": (original_date_get, original_date_set, original_date_delete),
     "performer:*": (performer_get, performer_set, performer_delete, performer_list),
-    "musicbrainz_trackid": (musicbrainz_trackid_get, musicbrainz_trackid_set, musicbrainz_trackid_delete),
+    "musicbrainz_trackid": (
+        musicbrainz_trackid_get,
+        musicbrainz_trackid_set,
+        musicbrainz_trackid_delete,
+    ),
     "website": (website_get, website_set, website_delete),
     "replaygain_*_gain": (gain_get, gain_set, gain_delete, peakgain_list),
     "replaygain_*_peak": (peak_get, peak_set, peak_delete),
@@ -81,8 +104,6 @@ EasyID3Keys = {
     **EasyID3TXXXKeys,
     **EasyID3MiscKeys,
 }
-
-from mutagen.id3._frames import TCON, TRCK, COMM, TDRC, TYER, TALB, TPE1, TIT2
 
 ID3MiscFrameClasses = {
     "TIT2": TIT2,
