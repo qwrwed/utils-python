@@ -7,6 +7,7 @@ import time
 from typing import Literal
 
 import requests
+from requests import Response
 
 LOGGER = logging.getLogger(__name__)
 
@@ -48,9 +49,11 @@ last_requests: dict[str | None, float] = {}
 def make_get_request_to_url(
     url: str,
     src_key: str | None = None,
-    min_delay=None,
-    format: Literal["text", "json", "bytes"] = "text",
-):
+    min_delay: float | None = None,
+    format: Literal["text", "json", "bytes", None] = "text",
+    require_ok: bool = True,
+    sleep_period_seconds: int = 5,
+) -> str | dict[str, object] | list[object] | bytes | Response:
     LOGGER.debug(f"making GET request to {url}")
     last_request = last_requests.get(src_key)
     # TODO: remove src_key, get website from url instead
