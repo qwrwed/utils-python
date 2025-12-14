@@ -8,7 +8,7 @@ from typing import Any, Iterable
 LOGGER = logging.getLogger(__name__)
 
 
-def flatten(l: list[list]):
+def flatten(l: list[list[object]]) -> list[object]:
     return [item for sublist in l for item in sublist]
 
 
