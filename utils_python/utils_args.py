@@ -46,7 +46,7 @@ class BaseNamespace(Namespace):
                 )
             else:
                 parser.add_argument(
-                    f"--{attr_name}",
+                    f"--{attr_name.replace('_', '-')}",
                     type=type_without_none,
                     default=default,
                     required=required,
