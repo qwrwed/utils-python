@@ -1,7 +1,7 @@
 import operator
 from argparse import ArgumentParser, Namespace
 from functools import reduce
-from types import UnionType
+from types import GenericAlias, UnionType
 from typing import Any, Self
 
 
@@ -44,13 +44,29 @@ class BaseNamespace(Namespace):
                     f"--{attr_name.replace('_', '-')}",
                     action=f"store_{str(not default).lower()}",
                 )
+            elif isinstance(attr_type, GenericAlias):
+                if attr_type.__origin__ == list:
+                    help = "Default: %(default)r" if default else None
+                    nargs = "*" if default is not None else "+"
+                    type_ = remove_none_type(attr_type.__args__[0])
+                    parser.add_argument(
+                        f"--{attr_name.replace('_', '-')}",
+                        type=type_,
+                        default=default,
+                        nargs=nargs,
+                        required=required,
+                        help=help,
+                    )
+                else:
+                    raise NotImplementedError(f"{attr_type=}")
             else:
+                help = "Default: %(default)r" if default is not None else None
                 parser.add_argument(
                     f"--{attr_name.replace('_', '-')}",
                     type=type_without_none,
                     default=default,
                     required=required,
-                    help="Default: %(default)r",
+                    help=help,
                 )
         args = parser.parse_args(namespace=namespace)
         return args
