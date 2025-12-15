@@ -1,7 +1,7 @@
 [project]
 name = "utils-python"
 description = ""
-version = "1.25.4"
+version = "1.25.5"
 authors = [
     { name = "qwrwed", email = "2429893+qwrwed@users.noreply.github.com" }
 ]

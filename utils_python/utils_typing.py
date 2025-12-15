@@ -25,4 +25,4 @@ def copy_signature(template: C) -> Callable[[C], C]:
     return apply_signature
 
 
-PathInput = PathLike | str
+PathInput = PathLike[str] | str
