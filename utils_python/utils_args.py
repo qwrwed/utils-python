@@ -33,6 +33,8 @@ class BaseNamespace(Namespace):
             else:
                 default = None
                 required = True
+                if isinstance(attr_type, UnionType) and type(None in attr_type.__args__):
+                    required = False
 
             type_without_none = remove_none_type(attr_type)
             if isinstance(type_without_none, UnionType):
