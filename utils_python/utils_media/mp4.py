@@ -4,6 +4,7 @@ from mutagen.easymp4 import EasyMP4, EasyMP4Tags
 
 from utils_python.utils_typing import PathInput
 
+EasyMP4Tags.RegisterTextKey("lyrics", "\xa9lyr")
 
 def get_registered_keys_mp4() -> set[str]:
     return EasyMP4.Get.keys() & EasyMP4.Set.keys() & EasyMP4.Delete.keys()

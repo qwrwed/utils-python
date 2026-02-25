@@ -14,6 +14,7 @@ EasyMP4TextKeys = {
     "soar": "artistsort",
     "sonm": "titlesort",
     "soco": "composersort",
+    "\xa9lyr": "lyrics", # not actually registered in mutagen.easymp4, but we want it to be
 }
 
 EasyMP4FreeformKeys = {
